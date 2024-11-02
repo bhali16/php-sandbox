@@ -1,8 +1,11 @@
 <?php
 $arrFiles = array();
 $dockerPath = '/var/www/html'; // Docker container path
-$localPath = '/Users/waqar/GitHub/php-sandbox/html'; // Your local machine path
+$localPathWindows = 'C:\Users\Phebsoft\GitHub\php-sandbox\html'; // Your local machine path
+$localPathMac = '/Users/waqar/GitHub/php-sandbox/html'; // Your local machine path
+
 $dirPath = "./";
+$os = "windows"; // mac or windows
 
 ?>
 
@@ -46,8 +49,15 @@ $dirPath = "./";
                     <?php
                  } elseif (is_dir($file)) {
                     $absolutePath = str_replace('\\', '/', realpath($file));
-                    // Replace Docker path with local path
-                    $localAbsolutePath = str_replace($dockerPath, $localPath, $absolutePath);
+                    // Replace Docker path with local path based on OS
+                    $localAbsolutePath = $os === "windows" ? 
+                        str_replace($dockerPath, $localPathWindows, $absolutePath) :
+                        str_replace($dockerPath, $localPathMac, $absolutePath);
+                    
+                    // Prepare VSCode URL based on OS
+                    $vscodeUrl = $os === "windows" ? 
+                        "vscode://file/" . $localAbsolutePath :
+                        "vscode://file" . $localAbsolutePath;
                     ?>
                     <div class="border rounded-lg p-4 hover:shadow-lg transition-shadow">
                         <div class="flex flex-col space-y-4">
@@ -62,7 +72,7 @@ $dirPath = "./";
                                    class="text-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                     View Project
                                 </a>
-                                <a href="vscode://file<?php echo $localAbsolutePath; ?>"
+                                <a href="<?php echo $vscodeUrl; ?>"
                                    class="text-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
                                     Open in VSCode
                                 </a>
