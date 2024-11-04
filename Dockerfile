@@ -4,6 +4,8 @@ FROM php:8.2-apache
 RUN apt-get update && apt-get install -y \
     libzip-dev \
     libpq-dev \
+    unzip \
+    git \
     && rm -rf /var/lib/apt/lists/* \
     && docker-php-ext-install \
         pdo \
@@ -12,6 +14,19 @@ RUN apt-get update && apt-get install -y \
         zip \
     && pecl install redis xdebug \
     && docker-php-ext-enable redis xdebug
+
+
+# Install Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# Configure PHP upload limits
+RUN echo "\
+upload_max_filesize = 2048M\n\
+post_max_size = 2048M\n\
+memory_limit = 2048M\n\
+max_execution_time = 600\n\
+max_input_time = 600\n" > /usr/local/etc/php/conf.d/uploads.ini
+
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite
 

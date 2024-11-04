@@ -16,6 +16,15 @@ services:
     environment:
       APACHE_RUN_USER: www-data
       APACHE_RUN_GROUP: www-data
+      APACHE_UPLOAD_MAX_FILESIZE: 2048M
+      APACHE_POST_MAX_SIZE: 2048M
+      APACHE_MAX_EXECUTION_TIME: 600
+      APACHE_MAX_INPUT_TIME: 600
+      APACHE_MEMORY_LIMIT: 2048M
+    command: >
+      bash -c "a2enmod rewrite &&
+      echo 'Timeout 600' >> /etc/apache2/apache2.conf &&
+      apache2-foreground"
 
   mysql:
     image: mysql:8.1.0
