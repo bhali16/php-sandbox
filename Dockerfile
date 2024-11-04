@@ -43,16 +43,6 @@ session.cookie_httponly = 1\n" >> /usr/local/etc/php/conf.d/uploads.ini
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite
 
-# Set working directory
-WORKDIR /var/www/html
-
-# Copy application files into the container
-COPY . /var/www/html
-
-# Set permissions to avoid "Forbidden" errors
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html
-
 # Update Apache configuration to allow access to the document root
 RUN echo "\
 <Directory /var/www/html>\n\
@@ -61,6 +51,17 @@ RUN echo "\
     Require all granted\n\
 </Directory>\n" \
 >> /etc/apache2/apache2.conf
+
+# Set working directory
+WORKDIR /var/www/html
+
+# Create directory and set permissions
+RUN mkdir -p /var/www/html \
+    && chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html
+
+# Copy application files into the container
+COPY --chown=www-data:www-data . /var/www/html/
 
 # Expose port 80 for Apache
 EXPOSE 80
