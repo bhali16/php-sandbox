@@ -6,14 +6,21 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     unzip \
     git \
+    && apt-get install -y \
+    libonig-dev \
+    libxml2-dev \
     && rm -rf /var/lib/apt/lists/* \
     && docker-php-ext-install \
         pdo \
         pdo_mysql \
         pdo_pgsql \
         zip \
-    && pecl install redis xdebug \
-    && docker-php-ext-enable redis xdebug
+        mbstring \
+        xml \
+    && pecl install redis \
+    && docker-php-ext-enable redis \
+    && pecl install xdebug \
+    && docker-php-ext-enable xdebug
 
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
