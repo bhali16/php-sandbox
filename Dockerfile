@@ -15,17 +15,30 @@ RUN apt-get update && apt-get install -y \
     && pecl install redis xdebug \
     && docker-php-ext-enable redis xdebug
 
-
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Configure PHP upload limits
+# Configure PHP upload limits (increased values)
 RUN echo "\
-upload_max_filesize = 2048M\n\
-post_max_size = 2048M\n\
-memory_limit = 2048M\n\
-max_execution_time = 600\n\
-max_input_time = 600\n" > /usr/local/etc/php/conf.d/uploads.ini
+upload_max_filesize = 5120M\n\
+post_max_size = 5120M\n\
+memory_limit = 5120M\n\
+max_execution_time = 3600\n\
+max_input_time = 3600\n\
+output_buffering = Off\n\
+max_input_vars = 5000\n\
+session.gc_maxlifetime = 3600\n\
+display_errors = Off\n\
+log_errors = On\n\
+error_reporting = E_ALL & ~E_DEPRECATED & ~E_STRICT\n" > /usr/local/etc/php/conf.d/uploads.ini
+
+# Additional PHP configuration for phpMyAdmin
+RUN echo "\
+session.save_handler = files\n\
+session.use_strict_mode = 1\n\
+session.use_cookies = 1\n\
+session.use_only_cookies = 1\n\
+session.cookie_httponly = 1\n" >> /usr/local/etc/php/conf.d/uploads.ini
 
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite
