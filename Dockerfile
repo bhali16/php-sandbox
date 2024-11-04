@@ -1,14 +1,16 @@
 FROM php:8.2-apache
 
-# Install necessary PHP extensions
-RUN apt-get update && apt-get install -y \
-    libzip-dev \
-    libpq-dev \
-    unzip \
-    git \
-    && apt-get install -y \
-    libonig-dev \
-    libxml2-dev \
+# Install necessary PHP extensions (modified with better error handling and repository management)
+RUN apt-get clean && \
+    rm -rf /var/lib/apt/lists/* && \
+    apt-get update --fix-missing && \
+    apt-get install -y --no-install-recommends \
+        libzip-dev \
+        libpq-dev \
+        unzip \
+        git \
+        libonig-dev \
+        libxml2-dev \
     && rm -rf /var/lib/apt/lists/* \
     && docker-php-ext-install \
         pdo \
